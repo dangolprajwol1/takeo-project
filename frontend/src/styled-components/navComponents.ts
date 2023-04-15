@@ -2,6 +2,9 @@ import styled from "@emotion/styled";
 
 export const Header = styled("header")((props) => ({
   background: "#ffffff",
+  position: "sticky",
+  top: "0",
+  zIndex: "999",
 
   "& .MuiGrid-root": {
     alignItems: "center",

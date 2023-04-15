@@ -10,3 +10,9 @@ body {
 a {
   color: #68676c;
 }
+p {
+  margin: 0;
+}
+body {
+  margin: 0;
+}

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Paper, Box, Button } from "@mui/material";
 
 export const DashboardWrap = styled("section")((props) => ({
-  marginTop: "2rem",
+  margin: "2rem 0",
 }));
 
 export const Heading = styled("h3")((props) => ({
@@ -32,7 +32,6 @@ export const ContentWrap = styled("div")((props) => ({
   },
 }));
 export const ButtonWrap = styled("div")((props) => ({
-  width: "75%",
   display: "flex",
   justifyContent: "center",
   alignContent: "center",
@@ -40,25 +39,25 @@ export const ButtonWrap = styled("div")((props) => ({
 
 export const GridTitle = styled("h2")((props) => ({
   fontSize: "2rem",
-  color: "#363540",
+  color: "#2C413A",
   letterSpacing: "0.1rem",
   fontWeight: "600",
   position: "relative",
   cursor: "pointer",
-  width: "max-content",
-  "&::after": {
-    content: '" "',
-    position: "absolute",
-    bottom: "-3px",
-    left: "0",
-    background: "#1976d235",
-    height: "0.25rem",
-    width: "100%",
-    opacity: "0",
-  },
-  "&:hover::after": {
-    opacity: "1",
-  },
+  // width: "max-content",
+  // "&::after": {
+  //   content: '" "',
+  //   position: "absolute",
+  //   bottom: "-3px",
+  //   left: "0",
+  //   background: "#1976d235",
+  //   height: "0.25rem",
+  //   width: "100%",
+  //   opacity: "0",
+  // },
+  // "&:hover::after": {
+  //   opacity: "1",
+  // },
 }));
 
 export const TodoPaper = styled(Paper)((props) => ({
@@ -104,5 +103,27 @@ export const TodoButton = styled(Button)(({ colors }: { colors: string }) => ({
   borderColor: "#ffffff",
   "&:hover": {
     borderColor: "#ffffff",
+  },
+}));
+
+export const TodoBoxSpaceEvenly = styled(Box)((props) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-evenly",
+}));
+export const TodoBoxSpaceBetween = styled(Box)((props) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+}));
+
+export const WeatherBoxInner = styled(Box)((props) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: "0.5rem",
+  marginTop: "1rem",
+  "& span": {
+    color: "#022519",
+    fontWeight: "400",
   },
 }));

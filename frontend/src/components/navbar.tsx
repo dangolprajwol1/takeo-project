@@ -35,15 +35,11 @@ const NavBar = () => {
   };
   return (
     <Header>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{ padding: 1.5 }}>
         <Grid item md={3} sm={12}>
           <Logo>
             <p>Task</p>
             <span>Tracker</span>
-            {/* <ThermostatIcon />
-            <p>
-              33 <span>C </span>
-            </p> */}
           </Logo>
         </Grid>
         <Grid item md={6} sm={12}>

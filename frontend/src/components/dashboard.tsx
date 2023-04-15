@@ -5,6 +5,10 @@ import AddIcon from "@mui/icons-material/Add";
 import TimelapseIcon from "@mui/icons-material/Timelapse";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import WbSunnyIcon from "@mui/icons-material/WbSunny";
+import AirIcon from "@mui/icons-material/Air";
+import WaterDropIcon from "@mui/icons-material/WaterDrop";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import {
   ButtonWrap,
   ContentWrap,
@@ -16,6 +20,9 @@ import {
   TodoButton,
   TodoPaper,
   TodoPaperRight,
+  TodoBoxSpaceEvenly,
+  WeatherBoxInner,
+  TodoBoxSpaceBetween,
 } from "../styled-components/dashboardComponent";
 const Dashboard = () => {
   return (
@@ -95,7 +102,6 @@ const Dashboard = () => {
             <Grid container spacing={2} rowSpacing={1}>
               <Grid item md={6} xs={12}>
                 <Paper
-                  elevation={3}
                   sx={{
                     p: "1rem",
                     height: "12rem",
@@ -106,7 +112,7 @@ const Dashboard = () => {
                     sx={{
                       fontSize: 80,
                       fontWeight: "300",
-                      color: "#38761D",
+                      color: "#4BA064",
                     }}
                   >
                     40
@@ -124,7 +130,6 @@ const Dashboard = () => {
               </Grid>
               <Grid item md={6} xs={12}>
                 <Paper
-                  elevation={3}
                   sx={{
                     mb: "1rem",
                     p: "1rem",
@@ -136,7 +141,7 @@ const Dashboard = () => {
                     sx={{
                       fontSize: 80,
                       fontWeight: "300",
-                      color: "#C80000",
+                      color: "#FF5E5E",
                     }}
                   >
                     14
@@ -152,6 +157,95 @@ const Dashboard = () => {
                   </TodoBox>
                 </Paper>
               </Grid>{" "}
+              <Grid item md={12} xs={12}>
+                <GridTitle> Current Location Info</GridTitle>
+                <Paper
+                  sx={{
+                    // height: "12rem",
+                    paddingBottom: "2rem",
+                    borderRadius: "0.8rem",
+                    // background: "#ACE3E5",
+                  }}
+                >
+                  <TodoBox
+                    sx={{
+                      fontSize: 15,
+                      fontWeight: "300",
+                      color: "gray",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        "& p": {
+                          color: "#4BA064",
+                          fontSize: "2rem",
+                          fontWeight: "500",
+                          letterSpacing: "2px",
+                          marginTop: "0.5rem",
+                          "& span": {
+                            color: "#C1BBB7",
+                            fontSize: "0.8rem",
+                          },
+                        },
+                      }}
+                    >
+                      <p>
+                        Monday <span>(22 March, 2023)</span>
+                      </p>
+                      <TodoBoxSpaceEvenly>
+                        <WbSunnyIcon
+                          sx={{
+                            fontSize: "5rem",
+                            color: "#F3C202",
+                          }}
+                        />
+                        <Box
+                          sx={{
+                            "& > p": {
+                              fontSize: "3.5rem",
+                              color: "#022519",
+                              marginTop: "0.5rem",
+                              "& span": {
+                                fontSize: "3.5rem",
+                                color: "#022519",
+                                position: "relative",
+                                "&::before": {
+                                  content: '" "',
+                                  position: "absolute",
+                                  width: "1rem",
+                                  height: "1rem",
+                                  top: "10%",
+                                  left: "-30%",
+                                  borderRadius: "50%",
+                                  border: "3px solid #022519",
+                                },
+                              },
+                            },
+                          }}
+                        >
+                          <p>
+                            14 <span>C</span>
+                          </p>
+                        </Box>
+                      </TodoBoxSpaceEvenly>
+                      <TodoBoxSpaceBetween sx={{ color: "#1976D2" }}>
+                        <WeatherBoxInner>
+                          <WaterDropIcon />
+                          <span>49%</span>
+                        </WeatherBoxInner>
+                        <WeatherBoxInner>
+                          <AirIcon />
+                          <span>12 m/h</span>
+                        </WeatherBoxInner>
+                        <WeatherBoxInner>
+                          <AccessTimeIcon />
+                          <span>11:12 pm</span>
+                        </WeatherBoxInner>
+                      </TodoBoxSpaceBetween>
+                    </Box>
+                  </TodoBox>
+                </Paper>
+              </Grid>
             </Grid>
           </Grid>
           <Grid item md={3.5} sm={6} xs={12}>
@@ -160,7 +254,7 @@ const Dashboard = () => {
               sx={{
                 display: "flex",
                 width: "85%",
-                justifyContent: "space-between",
+                justifyContent: "center",
                 gap: 1,
               }}
             >
@@ -189,7 +283,7 @@ const Dashboard = () => {
             >
               <ContentWrap>
                 <Box>
-                  <TimelapseIcon sx={{ color: "#C80000" }} />
+                  <TimelapseIcon sx={{ color: "#FF5E5E" }} />
                 </Box>
                 <Box>
                   <Heading> Ending task </Heading>
@@ -208,7 +302,7 @@ const Dashboard = () => {
             >
               <ContentWrap>
                 <Box>
-                  <TimelapseIcon sx={{ color: "#C80000" }} />
+                  <TimelapseIcon sx={{ color: "#FF5E5E" }} />
                 </Box>
                 <Box>
                   <Heading> Ending task </Heading>
