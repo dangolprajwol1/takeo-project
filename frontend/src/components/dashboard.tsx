@@ -24,79 +24,13 @@ import {
   WeatherBoxInner,
   TodoBoxSpaceBetween,
 } from "../styled-components/dashboardComponent";
+import TaskSidebar from "./subComponents/taskSidebar";
 const Dashboard = () => {
   return (
     <DashboardWrap>
       <Container>
         <Grid container spacing={10} rowSpacing={2}>
-          <Grid item md={3.5} sm={6} xs={12}>
-            <GridTitle> OnGoing Task</GridTitle>
-            <TodoPaper
-              sx={{
-                my: "1rem",
-                p: "0.75rem",
-                borderRadius: "0.85rem",
-              }}
-            >
-              <ContentWrap color="#1976d2">
-                <Box ml={2}>
-                  <Heading> General</Heading>
-                  <Span> 8 tasks</Span>
-                </Box>
-                <Box sx={{ opacity: "0" }}>
-                  <ModeEditIcon sx={{ fontSize: 30, color: "gray" }} />
-                </Box>
-              </ContentWrap>
-            </TodoPaper>
-            <TodoPaper
-              sx={{
-                my: "1rem",
-                p: "0.75rem",
-                borderRadius: "0.85rem",
-              }}
-            >
-              <ContentWrap color="#E45C32">
-                <Box ml={2}>
-                  <Heading> General</Heading>
-                  <Span> 8 tasks</Span>
-                </Box>
-                <Box sx={{ opacity: "0" }}>
-                  <ModeEditIcon sx={{ fontSize: 30, color: "gray" }} />
-                </Box>
-              </ContentWrap>
-            </TodoPaper>
-            <TodoPaper
-              sx={{
-                my: "1rem",
-                p: "0.75rem",
-                borderRadius: "0.85rem",
-              }}
-            >
-              <ContentWrap color="#1FBEC1">
-                <Box ml={2}>
-                  <Heading> General</Heading>
-                  <Span> 8 tasks</Span>
-                </Box>
-                <Box sx={{ opacity: "0" }}>
-                  <ModeEditIcon sx={{ fontSize: 30, color: "gray" }} />
-                </Box>
-              </ContentWrap>
-            </TodoPaper>
-            <ButtonWrap>
-              <Button
-                variant="contained"
-                startIcon={<AddIcon sx={{ fontSize: 50 }} />}
-                sx={{
-                  width: 4 / 4,
-                  height: "3rem",
-
-                  borderRadius: "0.5rem",
-                }}
-              >
-                Add New Task
-              </Button>
-            </ButtonWrap>
-          </Grid>
+          <TaskSidebar title="Ongoing Task" />
           <Grid item md={5} sm={6} xs={12}>
             <GridTitle> Progress So Far</GridTitle>
             <Grid container spacing={2} rowSpacing={1}>

@@ -24,7 +24,7 @@ import { Link } from "react-router-dom";
 import ThermostatIcon from "@mui/icons-material/Thermostat";
 import { useState } from "react";
 const NavBar = () => {
-  const pages = ["Home", "Dashboard", "Login", "Register"];
+  const pages = ["Home", "Dashboard", "Login", "Register", "Add Task"];
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -47,7 +47,9 @@ const NavBar = () => {
             <List>
               {pages.map((page) => (
                 <ListItem>
-                  <Link to="/">{page} </Link>
+                  <Link to={`/${page.replace(/\s+/g, "").toLowerCase()}`}>
+                    {page}{" "}
+                  </Link>
                 </ListItem>
               ))}
             </List>

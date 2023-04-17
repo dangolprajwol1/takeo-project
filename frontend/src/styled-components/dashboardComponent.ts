@@ -44,27 +44,9 @@ export const GridTitle = styled("h2")((props) => ({
   fontWeight: "600",
   position: "relative",
   cursor: "pointer",
-  // width: "max-content",
-  // "&::after": {
-  //   content: '" "',
-  //   position: "absolute",
-  //   bottom: "-3px",
-  //   left: "0",
-  //   background: "#1976d235",
-  //   height: "0.25rem",
-  //   width: "100%",
-  //   opacity: "0",
-  // },
-  // "&:hover::after": {
-  //   opacity: "1",
-  // },
 }));
 
 export const TodoPaper = styled(Paper)((props) => ({
-  //   background: "green",
-  //   "& .css-1qyqnox:nth-child(2) div::after": {
-  //     background: "purple",
-  //   },
   cursor: "pointer",
   "&:hover :last-child": {
     opacity: "1",
@@ -72,10 +54,6 @@ export const TodoPaper = styled(Paper)((props) => ({
 }));
 
 export const TodoPaperRight = styled(Paper)((props) => ({
-  //   background: "green",
-  //   "& .css-1qyqnox:nth-child(2) div::after": {
-  //     background: "purple",
-  //   },
   cursor: "pointer",
   padding: "0",
   paddingLeft: "0.5rem",
