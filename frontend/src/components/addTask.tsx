@@ -18,6 +18,7 @@ import {
 import TaskSidebar from "./subComponents/taskSidebar";
 import NavBar from "./navbar";
 import { FormWrap } from "../styled-components/taskComponent";
+import RightBar from "./subComponents/taskRightbar";
 const AddTask = () => {
   return (
     <>
@@ -67,6 +68,7 @@ const AddTask = () => {
                   </FormWrap>
                 </Paper>
               </Grid>
+              <RightBar />
             </Grid>
           </Container>
         </DashboardWrap>

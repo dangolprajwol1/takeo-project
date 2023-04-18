@@ -1,5 +1,13 @@
-import { Box, Container, Grid, Button, ButtonGroup } from "@mui/material";
+import {
+  Box,
+  Container,
+  Grid,
+  Button,
+  Checkbox,
+  ButtonGroup,
+} from "@mui/material";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
 import {
@@ -54,8 +62,29 @@ const TaskSidebar = (props: any) => {
             <Heading> General</Heading>
             <Span> 8 tasks</Span>
           </Box>
-          <Box sx={{ opacity: "0" }}>
-            <ModeEditIcon sx={{ fontSize: 30, color: "gray" }} />
+          <Box
+            sx={{
+              opacity: "0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flex: "1",
+            }}
+          >
+            <Checkbox
+              disableRipple
+              edge="end"
+              sx={{
+                color: "gray",
+                padding: "0",
+                margin: "0",
+                display: "flex",
+                justifyContent: "flex-end",
+                marginRight: "0.5rem",
+              }}
+            />
+            <ModeEditIcon sx={{ color: "gray" }} />
+            <DeleteIcon sx={{ fontSize: 30, color: "gray" }} />
           </Box>
         </ContentWrap>
       </TodoPaper>
@@ -71,8 +100,29 @@ const TaskSidebar = (props: any) => {
             <Heading> General</Heading>
             <Span> 8 tasks</Span>
           </Box>
-          <Box sx={{ opacity: "0" }}>
-            <ModeEditIcon sx={{ fontSize: 30, color: "gray" }} />
+          <Box
+            sx={{
+              opacity: "0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flex: "1",
+            }}
+          >
+            <Checkbox
+              disableRipple
+              edge="end"
+              sx={{
+                color: "gray",
+                padding: "0",
+                margin: "0",
+                display: "flex",
+                justifyContent: "flex-end",
+                marginRight: "0.5rem",
+              }}
+            />
+            <ModeEditIcon sx={{ color: "gray" }} />
+            <DeleteIcon sx={{ fontSize: 30, color: "gray" }} />
           </Box>
         </ContentWrap>
       </TodoPaper>

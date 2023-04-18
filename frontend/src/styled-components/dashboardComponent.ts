@@ -48,6 +48,9 @@ export const GridTitle = styled("h2")((props) => ({
 
 export const TodoPaper = styled(Paper)((props) => ({
   cursor: "pointer",
+  "& :first-child": {
+    flex: "1",
+  },
   "&:hover :last-child": {
     opacity: "1",
   },

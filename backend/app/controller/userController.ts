@@ -21,10 +21,14 @@ export const createUser = tryCatchWrapper(
         phone,
         activated: false,
       });
-      res.status(201).json({
-        success: true,
+      return res.send({
+        error: false,
         user,
       });
+      // res.status(201).json({
+      //   success: true,
+      //   user,
+      // });
     } catch (err) {
       throw new ApplicationError(500, "Error", [
         {
@@ -78,7 +82,7 @@ export const userLogin = tryCatchWrapper(
     const user: UserResponse | null = await findUser(email, "email");
 
     if (!user) {
-      throw new ApplicationError(500, "Error", [
+      throw new ApplicationError(501, "Error", [
         {
           field: "error",
           message: "Invalid user",

@@ -6,6 +6,7 @@ import TextField from "@mui/material/TextField";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers/";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   ModalFormWrap,
   ModalHeader,
@@ -21,7 +22,9 @@ const TodoModal = (props: any) => {
     <Dialog open={props.open} onClose={props.handleClose}>
       <ModalHeader>
         <DialogTitle>Add Task Title</DialogTitle>
-        <Button onClick={props.handleClose}>Cancel</Button>
+        <Button onClick={props.handleClose}>
+          <CloseIcon />
+        </Button>
       </ModalHeader>
       <DialogContent>
         <ModalFormWrap>
@@ -31,7 +34,10 @@ const TodoModal = (props: any) => {
             variant="outlined"
           />
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DemoContainer components={["DateTimePicker"]}>
+            <DemoContainer
+              sx={{ paddingTop: "0" }}
+              components={["DateTimePicker"]}
+            >
               <DateTimePicker
                 label="Task Deadline"
                 value={value}

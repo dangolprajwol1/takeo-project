@@ -9,7 +9,12 @@ const errorHandler = (
 ) => {
   console.log("running");
   if (error instanceof ApplicationError) {
-    return res.status(error.status).json({ error: true, message: error.error });
+    // return res.status(error.status).json({ error: true, message: error.error });
+    return res.send({
+      error: true,
+
+      message: error.error,
+    });
   }
   res.status(404).json({ error: true, message: error.message });
   // next();

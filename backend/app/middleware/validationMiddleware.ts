@@ -5,7 +5,7 @@ import ApplicationError from "../services/appError";
 
 const userDataValidator = tryCatchWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { username, password, email, phone } = req.body;
+    const { username, password, email, phone, confirmpw } = req.body;
     const validation = await inputValidation({
       username,
       password,
@@ -15,6 +15,14 @@ const userDataValidator = tryCatchWrapper(
     console.log(validation);
     if (validation.length > 0) {
       throw new ApplicationError(500, "Error", validation);
+    }
+    if (password !== confirmpw) {
+      throw new ApplicationError(500, "Error", [
+        {
+          field: "password",
+          message: "Password Do not Match !!",
+        },
+      ]);
     }
 
     let UserExist;

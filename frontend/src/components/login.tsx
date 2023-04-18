@@ -1,8 +1,35 @@
-import { Box, Container, Button, TextField, Paper, Stack } from "@mui/material";
+import {
+  Box,
+  Container,
+  Alert,
+  Button,
+  TextField,
+  Paper,
+  Stack,
+} from "@mui/material";
 import { FormWrap } from "../styled-components/taskComponent";
+import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { ResetError, UserLogin } from "../store/slice/userSlice";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import Loader from "./subComponents/loader";
 const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  // const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useDispatch<any>();
+  const user = useSelector((state: any) => state.users);
+  console.log(user);
+  useEffect(() => {
+    dispatch(ResetError());
+  }, []);
+  const handleLogin = (e: any) => {
+    e.preventDefault();
+    const credentials: string[] = [username, password];
+    dispatch(UserLogin(credentials));
+  };
   return (
     <Stack
       sx={{
@@ -13,6 +40,7 @@ const Login = () => {
       }}
       spacing={2}
     >
+      <Loader />
       <Box>
         <LoginTitle>Login To Your Account</LoginTitle>
       </Box>
@@ -23,17 +51,35 @@ const Login = () => {
             padding: "2rem",
             display: "flex",
             justifyContent: "center",
+            borderRadius: "1rem",
           }}
         >
-          <FormWrap>
-            <TextField id="outlined-basic" label="Username" />
+          <FormWrap onSubmit={handleLogin}>
+            {user.error.length > 0 &&
+              user.error.map((e: any) => {
+                return (
+                  <Alert variant="filled" severity="error">
+                    {e.message}
+                  </Alert>
+                );
+              })}
+
+            <TextField
+              id="outlined-basic"
+              label="Username"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+            />
             <TextField
               id="outlined-basic"
               label="Password"
               type="password"
               variant="outlined"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
             />
             <Button
+              type="submit"
               variant="contained"
               size="large"
               sx={{ background: "#E45C32" }}
