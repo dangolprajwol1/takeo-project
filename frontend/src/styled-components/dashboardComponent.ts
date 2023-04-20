@@ -5,11 +5,13 @@ export const DashboardWrap = styled("section")((props) => ({
   margin: "2rem 0",
 }));
 
-export const Heading = styled("h3")((props) => ({
+export const Heading = styled("h3")((props: any) => ({
   fontSize: "1.3rem",
   margin: "0",
   color: "#363540",
   fontWeight: "400",
+  textDecoration: props.completed ? "line-through" : "",
+  filter: props.completed ? "blur(0.8px)" : "",
 }));
 
 export const Span = styled("span")((props) => ({
@@ -48,7 +50,7 @@ export const GridTitle = styled("h2")((props) => ({
 
 export const TodoPaper = styled(Paper)((props) => ({
   cursor: "pointer",
-  "& :first-child": {
+  "& :first-of-type": {
     flex: "1",
   },
   "&:hover :last-child": {
@@ -61,7 +63,7 @@ export const TodoPaperRight = styled(Paper)((props) => ({
   padding: "0",
   paddingLeft: "0.5rem",
   paddingBottom: "0.5rem",
-  "& :first-child": {
+  "& :first-of-type": {
     marginTop: "4px",
   },
   "& span": {

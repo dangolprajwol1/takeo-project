@@ -5,11 +5,13 @@ import {
   Button,
   Checkbox,
   ButtonGroup,
+  Tooltip,
 } from "@mui/material";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
+import formatDistance from "date-fns/formatDistance";
 import {
   ButtonWrap,
   ContentWrap,
@@ -19,12 +21,37 @@ import {
   TodoPaper,
 } from "../../styled-components/dashboardComponent";
 import TodoModal from "./modal";
-
+import { useDispatch, useSelector } from "react-redux";
+import { CompleteTaskData, UserTasks } from "../../services/taskTypes";
+import { CompleteTask, GetTask } from "../../store/slice/taskSlice";
+import Loader from "./loader";
 const TaskSidebar = (props: any) => {
   const [open, setOpen] = useState(false);
+  const userTask = useSelector<any, any>((state) => state.tasks);
+  const currentUser = useSelector<any, any>((state) => state.users);
+  const color: string[] = ["#1976d2", "#E45C32", "#1FBEC1"];
+  const [taskToEdit, setTaskToEdit] = useState("");
+  const dispatch = useDispatch<any>();
 
-  const handleClickOpen = () => {
+  const updateComplete = async (e: any, payload: boolean) => {
+    const dataToSend: CompleteTaskData = {
+      completed: !payload,
+      taskId: e.target.value,
+    };
+    const data = await dispatch(CompleteTask(dataToSend));
+    if (data.payload.success) {
+      dispatch(GetTask(currentUser.userId));
+    }
+  };
+  const handleClickOpen = (action: string) => {
     setOpen(true);
+    if (action === "add") {
+      setTaskToEdit("");
+
+      return;
+    }
+
+    setTaskToEdit(action);
   };
 
   const handleClose = () => {
@@ -33,99 +60,77 @@ const TaskSidebar = (props: any) => {
   return (
     <Grid item md={3.5} sm={6} xs={12}>
       <GridTitle> {props.title}</GridTitle>
-      <TodoPaper
-        sx={{
-          my: "1rem",
-          p: "0.75rem",
-          borderRadius: "0.85rem",
-        }}
-      >
-        <ContentWrap color="#1976d2">
-          <Box ml={2}>
-            <Heading> General</Heading>
-            <Span> 8 tasks</Span>
-          </Box>
-          <Box sx={{ opacity: "0" }}>
-            <ModeEditIcon sx={{ fontSize: 30, color: "gray" }} />
-          </Box>
-        </ContentWrap>
-      </TodoPaper>
-      <TodoPaper
-        sx={{
-          my: "1rem",
-          p: "0.75rem",
-          borderRadius: "0.85rem",
-        }}
-      >
-        <ContentWrap color="#E45C32">
-          <Box ml={2}>
-            <Heading> General</Heading>
-            <Span> 8 tasks</Span>
-          </Box>
-          <Box
-            sx={{
-              opacity: "0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flex: "1",
-            }}
-          >
-            <Checkbox
-              disableRipple
-              edge="end"
+      <Loader loader="tasks" />
+      {userTask.userTasks.length === 0 && <p> No Task to Display</p>}
+      {userTask.userTasks.length > 0 &&
+        userTask.userTasks.map((task: UserTasks, index: number) => {
+          {
+            // reset index for color
+            index > 2 ? (index = index % 3) : 0;
+          }
+          return (
+            <TodoPaper
               sx={{
-                color: "gray",
-                padding: "0",
-                margin: "0",
-                display: "flex",
-                justifyContent: "flex-end",
-                marginRight: "0.5rem",
+                my: "1rem",
+                p: "0.75rem",
+                borderRadius: "0.85rem",
               }}
-            />
-            <ModeEditIcon sx={{ color: "gray" }} />
-            <DeleteIcon sx={{ fontSize: 30, color: "gray" }} />
-          </Box>
-        </ContentWrap>
-      </TodoPaper>
-      <TodoPaper
-        sx={{
-          my: "1rem",
-          p: "0.75rem",
-          borderRadius: "0.85rem",
-        }}
-      >
-        <ContentWrap color="#1FBEC1">
-          <Box ml={2}>
-            <Heading> General</Heading>
-            <Span> 8 tasks</Span>
-          </Box>
-          <Box
-            sx={{
-              opacity: "0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flex: "1",
-            }}
-          >
-            <Checkbox
-              disableRipple
-              edge="end"
-              sx={{
-                color: "gray",
-                padding: "0",
-                margin: "0",
-                display: "flex",
-                justifyContent: "flex-end",
-                marginRight: "0.5rem",
-              }}
-            />
-            <ModeEditIcon sx={{ color: "gray" }} />
-            <DeleteIcon sx={{ fontSize: 30, color: "gray" }} />
-          </Box>
-        </ContentWrap>
-      </TodoPaper>
+              key={task._id}
+            >
+              <ContentWrap color={color[index]}>
+                <Box ml={2} key={task._id}>
+                  <Tooltip
+                    title={`${task.title} ( added ${formatDistance(
+                      new Date(task.created),
+                      Date.now(),
+                      {
+                        addSuffix: true,
+                      }
+                    )} )`}
+                  >
+                    <Heading completed={task.completed}>
+                      {" "}
+                      {`${task.title.substring(0, 8)}...`}{" "}
+                    </Heading>
+                  </Tooltip>
+                  <Span> {`${task.todos.length} tasks`} </Span>
+                </Box>
+                <Box
+                  sx={{
+                    opacity: "0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flex: "1",
+                  }}
+                >
+                  <Checkbox
+                    disableRipple
+                    edge="end"
+                    sx={{
+                      color: "gray",
+                      padding: "0",
+                      margin: "0",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginRight: "0.5rem",
+                    }}
+                    value={task._id}
+                    checked={task.completed}
+                    onChange={(e) => updateComplete(e, task.completed)}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                  <ModeEditIcon
+                    sx={{ color: "gray" }}
+                    onClick={() => handleClickOpen(task._id)}
+                  />
+                  <DeleteIcon sx={{ fontSize: 30, color: "gray" }} />
+                </Box>
+              </ContentWrap>
+            </TodoPaper>
+          );
+        })}
+
       <ButtonWrap>
         <Button
           variant="contained"
@@ -136,12 +141,16 @@ const TaskSidebar = (props: any) => {
 
             borderRadius: "0.5rem",
           }}
-          onClick={handleClickOpen}
+          onClick={() => handleClickOpen("add")}
         >
           Add New Task
         </Button>
       </ButtonWrap>
-      <TodoModal open={open} handleClose={handleClose} />
+      <TodoModal
+        open={open}
+        handleClose={handleClose}
+        taskToEdit={taskToEdit}
+      />
     </Grid>
   );
 };

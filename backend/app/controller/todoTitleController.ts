@@ -33,6 +33,7 @@ export const createTodoTitle = tryCatchWrapper(
 export const updateTodoTitle = tryCatchWrapper(
   async (req: Request, res: Response) => {
     const { title, completed, expiry } = req.body;
+
     let todoTitle;
     try {
       todoTitle = await TodosTitle.findByIdAndUpdate(
@@ -53,7 +54,7 @@ export const updateTodoTitle = tryCatchWrapper(
       ]);
     }
 
-    return res.status(200).json(todoTitle);
+    return res.status(200).json({ success: true, todoTitle });
   }
 );
 // get todo title with all tasks
@@ -61,6 +62,24 @@ export const getTodoTitle = tryCatchWrapper(
   async (req: Request, res: Response) => {
     let todo = await TodosTitle.findById(req.params.id).populate("todosTitle");
 
+    if (!todo) {
+      throw new ApplicationError(500, "Error", [
+        {
+          field: "error",
+          message: "Error finding Data",
+        },
+      ]);
+    }
+    return res.status(200).json(todo);
+  }
+);
+export const getTodoTitleByUser = tryCatchWrapper(
+  async (req: Request, res: Response) => {
+    console.log();
+    let todo = await TodosTitle.find({ user: req.params.id }).populate({
+      path: "todos",
+    });
+    // console.log(todo);
     if (!todo) {
       throw new ApplicationError(500, "Error", [
         {

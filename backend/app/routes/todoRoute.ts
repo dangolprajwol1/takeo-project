@@ -3,6 +3,7 @@ import {
   createTodoTitle,
   deleteTodoTitle,
   getTodoTitle,
+  getTodoTitleByUser,
   updateTodoTitle,
 } from "../controller/todoTitleController";
 import {
@@ -16,6 +17,7 @@ const todoTitleRouter = express.Router();
 
 todoTitleRouter.post("/addTodo", createTodoTitle);
 todoTitleRouter.get("/getTodo/:id", getTodoTitle);
+todoTitleRouter.get("/getTodoUser/:id", getTodoTitleByUser);
 todoTitleRouter.patch("/updateTodo/:id", updateTodoTitle);
 todoTitleRouter.delete("/deleteTodo/:id", deleteTodoTitle);
 

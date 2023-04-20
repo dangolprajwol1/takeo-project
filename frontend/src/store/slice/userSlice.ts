@@ -1,14 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosBase from "../../services/axiosBase";
 import { UserData } from "../../services/userType";
+import axios from "axios";
+import { EmptyTask, GetTask } from "./taskSlice";
 export const UserLogin = createAsyncThunk(
   "user/UserLogin",
-  async (credentials: string[]) => {
+  async (credentials: string[], thunkAPI) => {
     const data = await axiosBase.post("api/v1/login", {
       email: credentials[0],
       password: credentials[1],
     });
-
+    if (!data.data.error) {
+      console.log("i entered here");
+      thunkAPI.dispatch(GetTask(data.data.uid));
+    }
     return data.data;
   }
 );
@@ -20,6 +25,21 @@ export const UserRegister = createAsyncThunk(
     return data.data;
   }
 );
+export const UserWeatherInfo = createAsyncThunk(
+  "user/UserWeatherInfo",
+  async (userPosition: number[]) => {
+    const weather = await axios.get(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${userPosition[1]}&lon=${userPosition[0]}&appid=967db3ba80563beaa4e4110dd5b0379c&units=metric`
+    );
+    return weather.data;
+  }
+);
+export const LogoutUser = createAsyncThunk(
+  "user/Logout",
+  async (_, thunkAPI) => {
+    thunkAPI.dispatch(EmptyTask());
+  }
+);
 export interface userState {
   token: string;
   loggedIn: boolean;
@@ -28,6 +48,8 @@ export interface userState {
   error: string[];
   success: string;
   loading: boolean;
+  location: number[];
+  weather: any[];
 }
 const initState: userState = {
   token: "",
@@ -37,6 +59,8 @@ const initState: userState = {
   error: [],
   success: "",
   loading: false,
+  location: [],
+  weather: [],
 };
 const UserSlice = createSlice({
   name: "user",
@@ -49,10 +73,8 @@ const UserSlice = createSlice({
       state.userId = action.payload.uid;
       state.loggedIn = true;
     },
-    LogoutActions(state, action) {
-      state.loggedIn = false;
-      state.token = "";
-      state.userId = "";
+    LogoutActions(state) {
+      return initState;
     },
     SetError(state, action) {
       state.error.push(...action.payload);
@@ -60,6 +82,9 @@ const UserSlice = createSlice({
     ResetError(state) {
       state.error = [];
       state.success = "";
+    },
+    SetLocation(state, action) {
+      state.location = action.payload;
     },
   },
   extraReducers(builder) {
@@ -93,9 +118,27 @@ const UserSlice = createSlice({
       .addCase(UserRegister.rejected, (state, action: any) => {
         state.error = action.payload.error ? action.payload.message : [];
         state.loading = false;
+      })
+      .addCase(UserWeatherInfo.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(UserWeatherInfo.fulfilled, (state, action) => {
+        state.weather = action.payload;
+        state.loading = false;
+      })
+      .addCase(UserWeatherInfo.rejected, (state, action: any) => {
+        state.loading = false;
+      })
+      .addCase(LogoutUser.fulfilled, (state) => {
+        return initState;
       });
   },
 });
-export const { LoginActions, LogoutActions, SetError, ResetError } =
-  UserSlice.actions;
+export const {
+  LoginActions,
+  LogoutActions,
+  SetError,
+  ResetError,
+  SetLocation,
+} = UserSlice.actions;
 export default UserSlice;

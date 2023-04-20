@@ -3,23 +3,40 @@ import App from "../App";
 import AddTask from "../components/addTask";
 import Login from "../components/login";
 import Register from "../components/register";
+import ProtectedPage from "../components/protectedRoute";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <ProtectedPage>
+        <App />
+      </ProtectedPage>
+    ),
   },
   {
     path: "/home",
-    element: <App />,
+    element: (
+      <ProtectedPage>
+        <App />
+      </ProtectedPage>
+    ),
   },
   {
     path: "/dashboard",
-    element: <App />,
+    element: (
+      <ProtectedPage>
+        <App />
+      </ProtectedPage>
+    ),
   },
   {
     path: "/addtask",
-    element: <AddTask />,
+    element: (
+      <ProtectedPage>
+        <AddTask />
+      </ProtectedPage>
+    ),
   },
   {
     path: "/login",

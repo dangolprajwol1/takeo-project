@@ -1,14 +1,10 @@
 import { Box, Container, Grid, Button, ButtonGroup } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import AddIcon from "@mui/icons-material/Add";
+
 import TimelapseIcon from "@mui/icons-material/Timelapse";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import WbSunnyIcon from "@mui/icons-material/WbSunny";
-import AirIcon from "@mui/icons-material/Air";
-import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import isAfter from "date-fns/isAfter";
 import {
   ButtonWrap,
   ContentWrap,
@@ -18,14 +14,20 @@ import {
   Span,
   TodoBox,
   TodoButton,
-  TodoPaper,
   TodoPaperRight,
-  TodoBoxSpaceEvenly,
-  WeatherBoxInner,
-  TodoBoxSpaceBetween,
 } from "../styled-components/dashboardComponent";
 import TaskSidebar from "./subComponents/taskSidebar";
+import LocationComponent from "./subComponents/location";
+import { useSelector } from "react-redux";
 const Dashboard = () => {
+  const currentUserTasks = useSelector<any, any>((state) => state.tasks);
+  const completedTask = currentUserTasks.userTasks.filter(
+    (item: any) => item.completed === true
+  );
+  const expiredTask = currentUserTasks.userTasks.filter((item: any) =>
+    isAfter(Date.now(), new Date(item.expiry))
+  );
+  // console.log(expiredTask);
   return (
     <DashboardWrap>
       <Container>
@@ -49,7 +51,7 @@ const Dashboard = () => {
                       color: "#4BA064",
                     }}
                   >
-                    40
+                    {completedTask.length}
                   </TodoBox>
                   <TodoBox
                     sx={{
@@ -78,7 +80,7 @@ const Dashboard = () => {
                       color: "#FF5E5E",
                     }}
                   >
-                    14
+                    {expiredTask.length}
                   </TodoBox>
                   <TodoBox
                     sx={{
@@ -92,93 +94,7 @@ const Dashboard = () => {
                 </Paper>
               </Grid>{" "}
               <Grid item md={12} xs={12}>
-                <GridTitle> Current Location Info</GridTitle>
-                <Paper
-                  sx={{
-                    // height: "12rem",
-                    paddingBottom: "2rem",
-                    borderRadius: "0.8rem",
-                    // background: "#ACE3E5",
-                  }}
-                >
-                  <TodoBox
-                    sx={{
-                      fontSize: 15,
-                      fontWeight: "300",
-                      color: "gray",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        "& p": {
-                          color: "#4BA064",
-                          fontSize: "2rem",
-                          fontWeight: "500",
-                          letterSpacing: "2px",
-                          marginTop: "0.5rem",
-                          "& span": {
-                            color: "#C1BBB7",
-                            fontSize: "0.8rem",
-                          },
-                        },
-                      }}
-                    >
-                      <p>
-                        Monday <span>(22 March, 2023)</span>
-                      </p>
-                      <TodoBoxSpaceEvenly>
-                        <WbSunnyIcon
-                          sx={{
-                            fontSize: "5rem",
-                            color: "#F3C202",
-                          }}
-                        />
-                        <Box
-                          sx={{
-                            "& > p": {
-                              fontSize: "3.5rem",
-                              color: "#022519",
-                              marginTop: "0.5rem",
-                              "& span": {
-                                fontSize: "3.5rem",
-                                color: "#022519",
-                                position: "relative",
-                                "&::before": {
-                                  content: '" "',
-                                  position: "absolute",
-                                  width: "1rem",
-                                  height: "1rem",
-                                  top: "10%",
-                                  left: "-30%",
-                                  borderRadius: "50%",
-                                  border: "3px solid #022519",
-                                },
-                              },
-                            },
-                          }}
-                        >
-                          <p>
-                            14 <span>C</span>
-                          </p>
-                        </Box>
-                      </TodoBoxSpaceEvenly>
-                      <TodoBoxSpaceBetween sx={{ color: "#1976D2" }}>
-                        <WeatherBoxInner>
-                          <WaterDropIcon />
-                          <span>49%</span>
-                        </WeatherBoxInner>
-                        <WeatherBoxInner>
-                          <AirIcon />
-                          <span>12 m/h</span>
-                        </WeatherBoxInner>
-                        <WeatherBoxInner>
-                          <AccessTimeIcon />
-                          <span>11:12 pm</span>
-                        </WeatherBoxInner>
-                      </TodoBoxSpaceBetween>
-                    </Box>
-                  </TodoBox>
-                </Paper>
+                <LocationComponent />
               </Grid>
             </Grid>
           </Grid>

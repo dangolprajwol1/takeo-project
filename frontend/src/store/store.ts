@@ -3,6 +3,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import UserSlice from "./slice/userSlice";
+import TaskSlice from "./slice/taskSlice";
 
 const persistConfig = {
   key: "root",
@@ -12,6 +13,7 @@ const persistConfig = {
 
 const reducer = combineReducers({
   users: UserSlice.reducer,
+  tasks: TaskSlice.reducer,
   //   todos: TodoSlice.reducer,
 });
 

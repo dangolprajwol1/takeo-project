@@ -15,99 +15,67 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { GridTitle } from "../../styled-components/dashboardComponent";
+import { useSelector } from "react-redux";
 const RightBar = () => {
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const handleChange = (panel: string) => (event: any, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
+  const userTask = useSelector<any, any>((state) => state.tasks);
   return (
     <Grid item md={3.5} sm={6} xs={12}>
       <GridTitle> Available Tasks</GridTitle>
+      {userTask.userTasks.length === 0 && (
+        <p> No Tasks To Display. Add a Task Title First</p>
+      )}
       <Paper>
-        <Accordion
-          expanded={expanded === "panel4"}
-          onChange={handleChange("panel4")}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel4bh-content"
-            id="panel4bh-header"
-          >
-            <Box>Personal data</Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <List>
-              <ListItem>
-                <ListItemText id="" primary={`Line item`} />
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
+        {userTask.userTasks.length > 0 &&
+          userTask.userTasks.map((task: any) => {
+            return (
+              <Accordion
+                expanded={expanded === task._id}
+                onChange={handleChange(task._id)}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel4bh-content"
+                  id="panel4bh-header"
                 >
-                  <Checkbox edge="end" />
-                  <ModeEditIcon sx={{ color: "gray" }} />
-                  <DeleteIcon sx={{ fontSize: 30, color: "gray" }} />
-                </Box>
-              </ListItem>
-              <ListItem>
-                <ListItemText id="" primary={`Line item`} />
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <Checkbox edge="end" />
-                  <ModeEditIcon sx={{ color: "gray" }} />
-                  <DeleteIcon sx={{ fontSize: 30, color: "gray" }} />
-                </Box>
-              </ListItem>
-              <ListItem>
-                <ListItemText id="" primary={`Line item`} />
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <Checkbox edge="end" />
-                  <ModeEditIcon sx={{ color: "gray" }} />
-                  <DeleteIcon
-                    onClick={() => alert("ok")}
-                    sx={{ fontSize: 30, color: "gray" }}
-                  />
-                </Box>
-              </ListItem>
-              <ListItem secondaryAction={<Checkbox edge="end" />}>
-                <ListItemText id="" primary={`Line item`} />
-              </ListItem>
-            </List>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion
-          expanded={expanded === "panel5"}
-          onChange={handleChange("panel5")}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel4bh-content"
-            id="panel4bh-header"
-          >
-            Personal Data
-          </AccordionSummary>
-          <AccordionDetails>
-            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer
-            sit amet egestas eros, vitae egestas augue. Duis vel est augue.
-          </AccordionDetails>
-        </Accordion>
+                  <Box>{task.title}</Box>
+                </AccordionSummary>
+
+                <AccordionDetails>
+                  {task.todos.length === 0 && <p> No Tasks To Display</p>}
+                  {task.todos.length > 0 && (
+                    <List>
+                      {task.todos.map((todo: any) => {
+                        return (
+                          <ListItem>
+                            <ListItemText id="" primary={todo.description} />
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                              }}
+                            >
+                              <Checkbox edge="end" />
+                              <ModeEditIcon sx={{ color: "gray" }} />
+                              <DeleteIcon
+                                sx={{ fontSize: 30, color: "gray" }}
+                              />
+                            </Box>
+                          </ListItem>
+                        );
+                      })}
+                    </List>
+                  )}
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
       </Paper>
     </Grid>
   );

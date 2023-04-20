@@ -20,11 +20,24 @@ import {
 
 // import ListItem from "@mui/material/ListItem";
 import { List, ListItem } from "@mui/material";
-import { Link } from "react-router-dom";
-import ThermostatIcon from "@mui/icons-material/Thermostat";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { LogoutActions, LogoutUser } from "../store/slice/userSlice";
 const NavBar = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch<any>();
+  const currentUser = useSelector<any, any>((state) => state.users);
+  const logout = () => {
+    // dispatch(LogoutActions());
+    dispatch(LogoutUser());
+    navigate("/login");
+  };
   const pages = ["Home", "Dashboard", "Login", "Register", "Add Task"];
+  if (currentUser.loggedIn) {
+    pages.splice(2, 2);
+  }
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -33,6 +46,11 @@ const NavBar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  // useEffect(() => {
+  //   if (currentUser.loggedIn) {
+  //     pages.splice(2, 2);
+  //   }
+  // }, []);
   return (
     <Header>
       <Grid container spacing={2} sx={{ padding: 1.5 }}>
@@ -45,10 +63,10 @@ const NavBar = () => {
         <Grid item md={6} sm={12}>
           <Navigation>
             <List>
-              {pages.map((page) => (
-                <ListItem>
+              {pages.map((page, index) => (
+                <ListItem key={`${index}-${page}`}>
                   <Link to={`/${page.replace(/\s+/g, "").toLowerCase()}`}>
-                    {page}{" "}
+                    {page}
                   </Link>
                 </ListItem>
               ))}
@@ -57,7 +75,7 @@ const NavBar = () => {
         </Grid>
         <Grid item md={3} sm={12}>
           <UserWrap>
-            <p> Welcome User</p>
+            <p> Welcome {currentUser.loggedInUser}</p>
             <Link to="/">
               <Tooltip title="You have new Notification">
                 <Badge color="success" badgeContent={99}>
@@ -117,7 +135,7 @@ const NavBar = () => {
                 <Avatar /> Profile
               </MenuItem>
 
-              <MenuItem>
+              <MenuItem onClick={() => logout()}>
                 <ListItemIcon>
                   <Logout fontSize="small" />
                 </ListItemIcon>

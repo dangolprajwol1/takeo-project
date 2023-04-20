@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { FormWrap } from "../styled-components/taskComponent";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { LoginDescription, LoginTitle } from "./login";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +19,7 @@ import Loader from "./subComponents/loader";
 const Register = () => {
   const dispatch = useDispatch<any>();
   const user = useSelector((state: any) => state.users);
+  const navigate = useNavigate();
   const userData: UserData = {
     username: "",
     password: "",
@@ -30,6 +31,9 @@ const Register = () => {
 
   useEffect(() => {
     dispatch(ResetError());
+    if (user.loggedIn) {
+      navigate("/");
+    }
   }, []);
   const doRegister = async (e: any) => {
     e.preventDefault();

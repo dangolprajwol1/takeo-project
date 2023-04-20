@@ -1,34 +1,37 @@
-import {
-  Box,
-  Container,
-  Alert,
-  Button,
-  TextField,
-  Paper,
-  Stack,
-} from "@mui/material";
+import { Box, Alert, Button, TextField, Paper, Stack } from "@mui/material";
 import { FormWrap } from "../styled-components/taskComponent";
 import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { ResetError, UserLogin } from "../store/slice/userSlice";
+import { LogoutActions, ResetError, UserLogin } from "../store/slice/userSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import Loader from "./subComponents/loader";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   // const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const navigate = useNavigate();
   const dispatch = useDispatch<any>();
+
+  const data = useLocation();
+
   const user = useSelector((state: any) => state.users);
-  console.log(user);
   useEffect(() => {
     dispatch(ResetError());
+    if (user.loggedIn) {
+      navigate("/");
+    }
   }, []);
-  const handleLogin = (e: any) => {
+  const handleLogin = async (e: any) => {
     e.preventDefault();
     const credentials: string[] = [username, password];
-    dispatch(UserLogin(credentials));
+
+    const user = await dispatch(UserLogin(credentials));
+
+    if (!user.payload.error) {
+      navigate("/");
+    }
   };
   return (
     <Stack
@@ -55,6 +58,9 @@ const Login = () => {
           }}
         >
           <FormWrap onSubmit={handleLogin}>
+            {user.error.length === 0 && data?.state && (
+              <Alert severity="error">{data?.state?.alert}</Alert>
+            )}
             {user.error.length > 0 &&
               user.error.map((e: any) => {
                 return (
