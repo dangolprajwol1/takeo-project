@@ -8,10 +8,10 @@ export const DashboardWrap = styled("section")((props) => ({
 export const Heading = styled("h3")((props: any) => ({
   fontSize: "1.3rem",
   margin: "0",
-  color: "#363540",
+  color: props.completed ? "#ffffff" : "#363540",
   fontWeight: "400",
   textDecoration: props.completed ? "line-through" : "",
-  filter: props.completed ? "blur(0.8px)" : "",
+  // filter: props.completed ? "blur(0.8px)" : "",
 }));
 
 export const Span = styled("span")((props) => ({
@@ -22,6 +22,7 @@ export const ContentWrap = styled("div")((props) => ({
   position: "relative",
   display: "flex",
   justifyContent: "space-between",
+  // width: "85%",
   "&::after": {
     content: '" "',
     position: "absolute",
@@ -61,8 +62,8 @@ export const TodoPaper = styled(Paper)((props) => ({
 export const TodoPaperRight = styled(Paper)((props) => ({
   cursor: "pointer",
   padding: "0",
-  paddingLeft: "0.5rem",
-  paddingBottom: "0.5rem",
+  // paddingLeft: "0.5rem",
+  // paddingBottom: "0.5rem",
   "& :first-of-type": {
     marginTop: "4px",
   },
@@ -74,9 +75,7 @@ export const TodoPaperRight = styled(Paper)((props) => ({
 }));
 
 export const TodoBox = styled(Box)((props) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+  textAlign: "center",
 }));
 export const TodoButton = styled(Button)(({ colors }: { colors: string }) => ({
   background: "#ffffff",
@@ -93,20 +92,32 @@ export const TodoBoxSpaceEvenly = styled(Box)((props) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-evenly",
+  marginTop: "0.5rem",
 }));
 export const TodoBoxSpaceBetween = styled(Box)((props) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
+  paddingInline: "0.3rem",
 }));
 
 export const WeatherBoxInner = styled(Box)((props) => ({
   display: "flex",
   alignItems: "center",
-  gap: "0.5rem",
+  // justifyContent: "center",
+  gap: "0.4rem",
   marginTop: "1rem",
+
   "& span": {
     color: "#022519",
     fontWeight: "400",
   },
+}));
+
+export const ContentWrapRight = styled("div")((props) => ({
+  display: "flex",
+  justifyContent: "space-around",
+  padding: "0.5rem",
+  // background: "#FF5E5E75",
+  // borderRadius: "0.85rem",
 }));

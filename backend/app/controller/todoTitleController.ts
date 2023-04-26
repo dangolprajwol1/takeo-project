@@ -45,6 +45,22 @@ export const updateTodoTitle = tryCatchWrapper(
         },
         { new: true }
       );
+      // console.log(completed);
+      // if task title is completed and passed true make all mini task complete
+      if (completed) {
+        await Todos.updateMany(
+          { todosTitle: todoTitle?._id },
+          { $set: { completed: true } }
+        );
+      }
+
+      // if parameter is passed false make all mini task incomplete
+      if (!title && !completed) {
+        await Todos.updateMany(
+          { todosTitle: todoTitle?._id },
+          { $set: { completed: false } }
+        );
+      }
     } catch (err) {
       throw new ApplicationError(500, "Error", [
         {
@@ -60,7 +76,9 @@ export const updateTodoTitle = tryCatchWrapper(
 // get todo title with all tasks
 export const getTodoTitle = tryCatchWrapper(
   async (req: Request, res: Response) => {
-    let todo = await TodosTitle.findById(req.params.id).populate("todosTitle");
+    let todo = await TodosTitle.findById(req.params.id).populate({
+      path: "todos",
+    });
 
     if (!todo) {
       throw new ApplicationError(500, "Error", [
@@ -75,7 +93,6 @@ export const getTodoTitle = tryCatchWrapper(
 );
 export const getTodoTitleByUser = tryCatchWrapper(
   async (req: Request, res: Response) => {
-    console.log();
     let todo = await TodosTitle.find({ user: req.params.id }).populate({
       path: "todos",
     });
@@ -94,6 +111,7 @@ export const getTodoTitleByUser = tryCatchWrapper(
 export const deleteTodoTitle = tryCatchWrapper(
   async (req: Request, res: Response) => {
     const deleted = await TodosTitle.findOneAndDelete({ _id: req.params.id });
+
     if (!deleted) {
       throw new ApplicationError(500, "Error", [
         {
@@ -104,7 +122,7 @@ export const deleteTodoTitle = tryCatchWrapper(
     }
     //delete all todo tasks under current title
     await Todos.deleteMany({ _id: { $in: deleted.todos } });
-    res.status(200).json(deleted);
+    res.status(200).json({ success: true, deleted });
   }
 );
 // function to add or remove tasks to todo title

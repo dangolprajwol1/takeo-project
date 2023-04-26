@@ -8,6 +8,7 @@ import isAfter from "date-fns/isAfter";
 import {
   ButtonWrap,
   ContentWrap,
+  ContentWrapRight,
   DashboardWrap,
   GridTitle,
   Heading,
@@ -19,15 +20,19 @@ import {
 import TaskSidebar from "./subComponents/taskSidebar";
 import LocationComponent from "./subComponents/location";
 import { useSelector } from "react-redux";
+import TaskEndingToday from "./subComponents/dashboardRightbar";
 const Dashboard = () => {
   const currentUserTasks = useSelector<any, any>((state) => state.tasks);
   const completedTask = currentUserTasks.userTasks.filter(
     (item: any) => item.completed === true
   );
-  const expiredTask = currentUserTasks.userTasks.filter((item: any) =>
-    isAfter(Date.now(), new Date(item.expiry))
+  const incompleteTask = currentUserTasks.userTasks.filter(
+    (item: any) => item.completed === false
   );
-  // console.log(expiredTask);
+  const expiredTask = currentUserTasks.userTasks.filter(
+    (item: any) => isAfter(Date.now(), new Date(item.expiry)) && !item.completed
+  );
+
   return (
     <DashboardWrap>
       <Container>
@@ -36,6 +41,34 @@ const Dashboard = () => {
           <Grid item md={5} sm={6} xs={12}>
             <GridTitle> Progress So Far</GridTitle>
             <Grid container spacing={2} rowSpacing={1}>
+              <Grid item md={6} xs={12}>
+                <Paper
+                  sx={{
+                    p: "1rem",
+                    height: "12rem",
+                    borderRadius: "0.8rem",
+                  }}
+                >
+                  <TodoBox
+                    sx={{
+                      fontSize: 80,
+                      fontWeight: "300",
+                      color: "#1976d2",
+                    }}
+                  >
+                    {currentUserTasks.userTasks.length}
+                  </TodoBox>
+                  <TodoBox
+                    sx={{
+                      fontSize: 15,
+                      fontWeight: "300",
+                      color: "gray",
+                    }}
+                  >
+                    Total Created Tasks
+                  </TodoBox>
+                </Paper>
+              </Grid>
               <Grid item md={6} xs={12}>
                 <Paper
                   sx={{
@@ -77,6 +110,36 @@ const Dashboard = () => {
                     sx={{
                       fontSize: 80,
                       fontWeight: "300",
+                      color: "#E45C32",
+                    }}
+                  >
+                    {incompleteTask.length}
+                  </TodoBox>
+                  <TodoBox
+                    sx={{
+                      fontSize: 15,
+                      fontWeight: "300",
+                      color: "gray",
+                    }}
+                  >
+                    Tasks Need Action
+                  </TodoBox>
+                </Paper>
+              </Grid>
+
+              <Grid item md={6} xs={12}>
+                <Paper
+                  sx={{
+                    mb: "1rem",
+                    p: "1rem",
+                    height: "12rem",
+                    borderRadius: "0.8rem",
+                  }}
+                >
+                  <TodoBox
+                    sx={{
+                      fontSize: 80,
+                      fontWeight: "300",
                       color: "#FF5E5E",
                     }}
                   >
@@ -92,75 +155,14 @@ const Dashboard = () => {
                     Tasks Expired
                   </TodoBox>
                 </Paper>
-              </Grid>{" "}
-              <Grid item md={12} xs={12}>
-                <LocationComponent />
               </Grid>
             </Grid>
           </Grid>
           <Grid item md={3.5} sm={6} xs={12}>
-            <GridTitle> Ending Today</GridTitle>
-            <Box
-              sx={{
-                display: "flex",
-                width: "85%",
-                justifyContent: "center",
-                gap: 1,
-              }}
-            >
-              <TodoButton
-                variant="outlined"
-                colors="#C47689"
-                startIcon={<StarBorderIcon sx={{ fontSize: 50 }} />}
-              >
-                Today
-              </TodoButton>
-              <TodoButton
-                variant="outlined"
-                colors="#1976d2"
-                startIcon={<CalendarMonthIcon sx={{ fontSize: 50 }} />}
-              >
-                Tomorrow
-              </TodoButton>
-            </Box>
-            <TodoPaperRight
-              sx={{
-                my: "1rem",
-                p: "0.75rem",
-                borderRadius: "0.85rem",
-                width: "85%",
-              }}
-            >
-              <ContentWrap>
-                <Box>
-                  <TimelapseIcon sx={{ color: "#FF5E5E" }} />
-                </Box>
-                <Box>
-                  <Heading> Ending task </Heading>
-                  <Span> Today 4 pm</Span>
-                </Box>
-                <Box></Box>
-              </ContentWrap>
-            </TodoPaperRight>
-            <TodoPaperRight
-              sx={{
-                my: "1rem",
-                p: "0.75rem",
-                borderRadius: "0.85rem",
-                width: "85%",
-              }}
-            >
-              <ContentWrap>
-                <Box>
-                  <TimelapseIcon sx={{ color: "#FF5E5E" }} />
-                </Box>
-                <Box>
-                  <Heading> Ending task </Heading>
-                  <Span> Today 4 pm</Span>
-                </Box>
-                <Box></Box>
-              </ContentWrap>
-            </TodoPaperRight>
+            <GridTitle> Weather Today</GridTitle>
+            <LocationComponent />
+            <GridTitle>Upcoming Task</GridTitle>
+            <TaskEndingToday />
           </Grid>
         </Grid>
       </Container>

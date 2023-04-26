@@ -25,8 +25,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { CompleteTaskData, UserTasks } from "../../services/taskTypes";
 import { CompleteTask, GetTask } from "../../store/slice/taskSlice";
 import Loader from "./loader";
+import Confirmation from "./deleteConfirmation";
 const TaskSidebar = (props: any) => {
   const [open, setOpen] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
   const userTask = useSelector<any, any>((state) => state.tasks);
   const currentUser = useSelector<any, any>((state) => state.users);
   const color: string[] = ["#1976d2", "#E45C32", "#1FBEC1"];
@@ -43,19 +45,25 @@ const TaskSidebar = (props: any) => {
       dispatch(GetTask(currentUser.userId));
     }
   };
-  const handleClickOpen = (action: string) => {
+  const handleClickOpen = (action: string, payload: string) => {
+    if (action === "delete") {
+      setOpenConfirm(true);
+      setTaskToEdit(payload);
+      return;
+    }
     setOpen(true);
     if (action === "add") {
       setTaskToEdit("");
-
       return;
     }
 
-    setTaskToEdit(action);
+    setTaskToEdit(payload);
   };
 
   const handleClose = () => {
+    setOpenConfirm(false);
     setOpen(false);
+    setTaskToEdit("");
   };
   return (
     <Grid item md={3.5} sm={6} xs={12}>
@@ -74,6 +82,7 @@ const TaskSidebar = (props: any) => {
                 my: "1rem",
                 p: "0.75rem",
                 borderRadius: "0.85rem",
+                background: task.completed ? color[index] : "",
               }}
               key={task._id}
             >
@@ -102,6 +111,15 @@ const TaskSidebar = (props: any) => {
                     alignItems: "center",
                     justifyContent: "space-between",
                     flex: "1",
+                    // "& > span.Mui-checked": {
+                    //   color: task.completed ? "#ffffff" : color[index],
+                    // },
+                    "& > span:has(input:checked)": {
+                      color: task.completed ? "#ffffff" : color[index],
+                    },
+                    "& > span": {
+                      color: color[index],
+                    },
                   }}
                 >
                   <Checkbox
@@ -121,10 +139,16 @@ const TaskSidebar = (props: any) => {
                     inputProps={{ "aria-label": "controlled" }}
                   />
                   <ModeEditIcon
-                    sx={{ color: "gray" }}
-                    onClick={() => handleClickOpen(task._id)}
+                    sx={{ color: task.completed ? "#ffffff" : color[index] }}
+                    onClick={() => handleClickOpen("edit", task._id)}
                   />
-                  <DeleteIcon sx={{ fontSize: 30, color: "gray" }} />
+                  <DeleteIcon
+                    sx={{
+                      fontSize: 30,
+                      color: task.completed ? "#ffffff" : color[index],
+                    }}
+                    onClick={() => handleClickOpen("delete", task._id)}
+                  />
                 </Box>
               </ContentWrap>
             </TodoPaper>
@@ -141,7 +165,7 @@ const TaskSidebar = (props: any) => {
 
             borderRadius: "0.5rem",
           }}
-          onClick={() => handleClickOpen("add")}
+          onClick={() => handleClickOpen("add", "")}
         >
           Add New Task
         </Button>
@@ -150,6 +174,12 @@ const TaskSidebar = (props: any) => {
         open={open}
         handleClose={handleClose}
         taskToEdit={taskToEdit}
+      />
+      <Confirmation
+        open={openConfirm}
+        handleClose={handleClose}
+        taskToEdit={taskToEdit}
+        deleteType="taskTitle"
       />
     </Grid>
   );

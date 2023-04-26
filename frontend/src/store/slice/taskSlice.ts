@@ -7,6 +7,7 @@ import {
   TodoData,
 } from "../../services/taskTypes";
 
+/* Task Title functions starts here */
 export const CreateTask = createAsyncThunk(
   "task/CreateTask",
   async (input: TaskData) => {
@@ -37,6 +38,15 @@ export const CompleteTask = createAsyncThunk(
     return data.data;
   }
 );
+export const DeleteTask = createAsyncThunk(
+  "task/DeleteTask",
+  async (taskId: string) => {
+    const data = await axiosBase.delete(`api/v1/todo/deleteTodo/${taskId}`);
+    return data.data;
+  }
+);
+/* end task title functions */
+/* Task slice functions starts here */
 export const AddTodoToTask = createAsyncThunk(
   "task/AddTodoToTask",
   async (input: TodoData) => {
@@ -45,6 +55,20 @@ export const AddTodoToTask = createAsyncThunk(
     return data.data;
   }
 );
+export const CompleteTodoTask = createAsyncThunk(
+  "task/CompleteTodoTask",
+  async (input: CompleteTaskData) => {
+    const data = await axiosBase.patch(
+      `api/v1/todo/updateTodo/task/${input.taskId}`,
+      input
+    );
+    // console.log(data);
+    return data.data;
+  }
+);
+/* end Task slice functions */
+
+// get all todos
 export const GetTask = createAsyncThunk(
   "task/GetTask",
   async (userId: string) => {
@@ -98,12 +122,21 @@ const TaskSlice = createSlice({
       .addCase(CompleteTask.rejected, (state) => {
         state.loading = false;
       })
+      .addCase(DeleteTask.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(DeleteTask.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(DeleteTask.rejected, (state) => {
+        state.loading = false;
+      })
       .addCase(GetTask.pending, (state) => {
         state.loading = true;
       })
       .addCase(GetTask.fulfilled, (state, action) => {
         state.loading = false;
-        state.userTasks = action.payload;
+        state.userTasks = action.payload.reverse();
       })
       .addCase(GetTask.rejected, (state) => {
         state.loading = false;
@@ -115,6 +148,15 @@ const TaskSlice = createSlice({
         state.loading = false;
       })
       .addCase(AddTodoToTask.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(CompleteTodoTask.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(CompleteTodoTask.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(CompleteTodoTask.rejected, (state) => {
         state.loading = false;
       });
   },

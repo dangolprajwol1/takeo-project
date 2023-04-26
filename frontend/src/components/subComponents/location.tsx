@@ -4,7 +4,6 @@ import AirIcon from "@mui/icons-material/Air";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import {
-  GridTitle,
   TodoBox,
   TodoBoxSpaceEvenly,
   WeatherBoxInner,
@@ -56,7 +55,7 @@ const LocationComponent = () => {
     };
   }, []);
   useEffect(() => {
-    if (Object.keys(currentUser.weather).length > 0) {
+    if (currentUser.weather && Object.keys(currentUser.weather).length > 0) {
       return;
     }
     getCurrentLocation();
@@ -64,12 +63,13 @@ const LocationComponent = () => {
 
   return (
     <>
-      <GridTitle> Current Location Infos</GridTitle>
+      {/* <GridTitle> Current Location Infos</GridTitle> */}
       <Loader />
       <Paper
         sx={{
           // height: "12rem",
-          paddingBottom: "2rem",
+          paddingBottom: "1rem",
+
           borderRadius: "0.8rem",
           // background: "#ACE3E5",
         }}
@@ -79,19 +79,26 @@ const LocationComponent = () => {
             fontSize: 15,
             fontWeight: "300",
             color: "gray",
+            width: "100%",
+            "& p": {
+              color: "#4BA064",
+              fontSize: "2rem",
+              fontWeight: "500",
+              letterSpacing: "1px",
+              marginTop: "0.5rem",
+              "& span": {
+                color: "#C1BBB7",
+                fontSize: "0.8rem",
+              },
+            },
           }}
         >
           <Box
             sx={{
+              textAlign: "center",
               "& p": {
-                color: "#4BA064",
-                fontSize: "2rem",
-                fontWeight: "500",
-                letterSpacing: "2px",
-                marginTop: "0.5rem",
                 "& span": {
-                  color: "#C1BBB7",
-                  fontSize: "0.8rem",
+                  display: "block",
                 },
               },
             }}
@@ -100,70 +107,74 @@ const LocationComponent = () => {
               {format(date, "EEEE")}{" "}
               <span>({format(date, "MMMM do, yyyy")})</span>
             </p>
-            <TodoBoxSpaceEvenly>
-              <WbSunnyIcon
-                sx={{
-                  fontSize: "5rem",
-                  color: "#F3C202",
-                }}
-              />
-              <Box
-                sx={{
-                  "& > p": {
-                    fontSize: "3.5rem",
-                    color: "#022519",
-                    marginTop: "0.5rem",
-
-                    "& span": {
-                      fontSize: "3.5rem",
-                      color: "#022519",
-                      position: "relative",
-                      marginLeft: "0.5rem",
-                      "&::before": {
-                        content: '" "',
-                        position: "absolute",
-                        width: "1rem",
-                        height: "1rem",
-                        top: "15%",
-                        left: "-20%",
-                        borderRadius: "50%",
-                        border: "3px solid #022519",
-                      },
-                    },
-                  },
-                }}
-              >
-                <p>
-                  {Object.keys(currentUser.weather).length > 0 &&
-                    Math.trunc(currentUser.weather.main.temp)}
-                  <span>C</span>
-                </p>
-              </Box>
-            </TodoBoxSpaceEvenly>
-            <TodoBoxSpaceBetween sx={{ color: "#1976D2", gap: "1rem " }}>
-              <WeatherBoxInner>
-                <WaterDropIcon />
-                <span>
-                  {Object.keys(currentUser.weather).length > 0 &&
-                    Math.trunc(currentUser.weather.main.humidity)}
-                  %
-                </span>
-              </WeatherBoxInner>
-              <WeatherBoxInner>
-                <AirIcon />
-                <span>
-                  {Object.keys(currentUser.weather).length > 0 &&
-                    Math.trunc(currentUser.weather.wind.speed)}{" "}
-                  m/s
-                </span>
-              </WeatherBoxInner>
-              <WeatherBoxInner sx={{ flex: "1" }}>
-                <AccessTimeIcon />
-                {/* <span>{format(date, "HH:mm:ss a")}</span> */}
-                <span>{format(clock, "HH:mm:ss a")}</span>
-              </WeatherBoxInner>
-            </TodoBoxSpaceBetween>
           </Box>
+          {currentUser.weather &&
+            Object.keys(currentUser.weather).length > 0 && (
+              <>
+                <TodoBoxSpaceEvenly>
+                  <WbSunnyIcon
+                    sx={{
+                      fontSize: "5rem",
+                      color: "#F3C202",
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      "& > p": {
+                        fontSize: "3.5rem",
+                        color: "#022519",
+                        marginTop: "0.5rem",
+                        "& span": {
+                          fontSize: "3.5rem",
+                          color: "#022519",
+                          position: "relative",
+                          marginLeft: "0.5rem",
+                          "&::before": {
+                            content: '" "',
+                            position: "absolute",
+                            width: "1rem",
+                            height: "1rem",
+                            top: "15%",
+                            left: "-20%",
+                            borderRadius: "50%",
+                            border: "3px solid #022519",
+                          },
+                        },
+                      },
+                    }}
+                  >
+                    <p>
+                      {Math.trunc(currentUser.weather.main.temp)}
+                      <span>C</span>
+                    </p>
+                  </Box>
+                </TodoBoxSpaceEvenly>
+
+                <TodoBoxSpaceBetween sx={{ color: "#1976D2", gap: "0.5rem " }}>
+                  <WeatherBoxInner>
+                    <WaterDropIcon />
+                    <span>
+                      {Math.trunc(currentUser.weather.main.humidity)}%
+                    </span>
+                  </WeatherBoxInner>
+                  <WeatherBoxInner>
+                    <AirIcon />
+                    <span>
+                      {Math.trunc(currentUser.weather.wind.speed)} m/s
+                    </span>
+                  </WeatherBoxInner>
+                  <WeatherBoxInner sx={{ flex: "1" }}>
+                    <AccessTimeIcon />
+                    {/* <span>{format(date, "HH:mm:ss a")}</span> */}
+                    <span>{format(clock, "HH:mm:ss a")}</span>
+                  </WeatherBoxInner>
+                </TodoBoxSpaceBetween>
+              </>
+            )}
+          {currentUser.weather &&
+            Object.keys(currentUser.weather).length === 0 && (
+              <TodoBox> Please Allow to access location. </TodoBox>
+            )}
         </TodoBox>
       </Paper>
     </>

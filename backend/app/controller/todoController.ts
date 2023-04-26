@@ -5,6 +5,7 @@ import ApplicationError from "../services/appError";
 import Todos from "../model/todos";
 import TodosTitle from "../model/todosTitle";
 import { TodosToTitle } from "./todoTitleController";
+import { TodoResponse, TodoTitleResponse } from "../DataTypes/todoResponse";
 
 export const createTodo = tryCatchWrapper(
   async (req: Request, res: Response) => {
@@ -34,9 +35,9 @@ export const createTodo = tryCatchWrapper(
 export const updateTodo = tryCatchWrapper(
   async (req: Request, res: Response) => {
     const { description, completed } = req.body;
-    let todo;
+    let todo: TodoResponse | null;
     try {
-      todo = await TodosTitle.findByIdAndUpdate(
+      todo = await Todos.findByIdAndUpdate(
         req.params.id,
         {
           description,
@@ -44,6 +45,33 @@ export const updateTodo = tryCatchWrapper(
         },
         { new: true }
       );
+      // update parent todo title for complete  action
+      if (todo) {
+        // get todo title
+        const todoTitle: TodoTitleResponse | null = await TodosTitle.findById(
+          todo?.todosTitle
+        ).populate({
+          path: "todos",
+        });
+        // check if all todos inside title is complete
+        const isAllCompleted = todoTitle?.todos.every(
+          (items) => items?.completed === true
+        );
+        if (isAllCompleted) {
+          // complete todo title
+          await TodosTitle.findByIdAndUpdate(todo?.todosTitle, {
+            completed: true,
+          });
+        } else {
+          // if its already false return
+          if (todoTitle?.completed === false)
+            return res.status(200).json({ success: true, todo });
+          // else make an update
+          await TodosTitle.findByIdAndUpdate(todo?.todosTitle, {
+            completed: false,
+          });
+        }
+      }
     } catch (err) {
       throw new ApplicationError(500, "Error", [
         {
@@ -53,7 +81,7 @@ export const updateTodo = tryCatchWrapper(
       ]);
     }
 
-    return res.status(200).json(todo);
+    return res.status(200).json({ success: true, todo });
   }
 );
 
@@ -73,7 +101,7 @@ export const deleteTodo = tryCatchWrapper(
       deleted._id.toString(),
       "delete"
     );
-    res.status(200).json(deleted);
+    res.status(200).json({ success: true, deleted });
   }
 );
 

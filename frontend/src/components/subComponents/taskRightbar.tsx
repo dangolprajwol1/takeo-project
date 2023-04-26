@@ -15,14 +15,50 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { GridTitle } from "../../styled-components/dashboardComponent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { CompleteTaskData } from "../../services/taskTypes";
+import { CompleteTodoTask, GetTask } from "../../store/slice/taskSlice";
+import Confirmation from "./deleteConfirmation";
 const RightBar = () => {
   const [expanded, setExpanded] = useState<string | false>(false);
-
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState("");
   const handleChange = (panel: string) => (event: any, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
   const userTask = useSelector<any, any>((state) => state.tasks);
+  const currentUser = useSelector<any, any>((state) => state.users);
+  const dispatch = useDispatch<any>();
+  const updateComplete = async (e: any, payload: boolean) => {
+    const dataToSend: CompleteTaskData = {
+      completed: !payload,
+      taskId: e.target.value,
+    };
+    const data = await dispatch(CompleteTodoTask(dataToSend));
+    if (data.payload.success) {
+      dispatch(GetTask(currentUser.userId));
+    }
+  };
+  const handleClickOpen = (action: string, payload: string) => {
+    if (action === "delete") {
+      setOpenConfirm(true);
+      setTaskToEdit(payload);
+      return;
+    }
+
+    if (action === "add") {
+      setTaskToEdit("");
+      return;
+    }
+
+    setTaskToEdit(payload);
+  };
+
+  const handleClose = () => {
+    setOpenConfirm(false);
+
+    setTaskToEdit("");
+  };
   return (
     <Grid item md={3.5} sm={6} xs={12}>
       <GridTitle> Available Tasks</GridTitle>
@@ -51,8 +87,20 @@ const RightBar = () => {
                     <List>
                       {task.todos.map((todo: any) => {
                         return (
-                          <ListItem>
-                            <ListItemText id="" primary={todo.description} />
+                          <ListItem
+                            sx={{
+                              background: todo.completed ? "#4BA064" : "",
+                              my: "0.5rem",
+                            }}
+                          >
+                            <ListItemText
+                              sx={{
+                                textDecoration: todo.completed
+                                  ? "line-through"
+                                  : "",
+                              }}
+                              primary={todo.description}
+                            />
                             <Box
                               sx={{
                                 display: "flex",
@@ -61,10 +109,31 @@ const RightBar = () => {
                                 gap: "0.5rem",
                               }}
                             >
-                              <Checkbox edge="end" />
-                              <ModeEditIcon sx={{ color: "gray" }} />
+                              <Checkbox
+                                edge="end"
+                                value={todo._id}
+                                checked={todo.completed}
+                                onChange={(e) =>
+                                  updateComplete(e, todo.completed)
+                                }
+                                inputProps={{ "aria-label": "controlled" }}
+                                sx={{
+                                  color: todo.completed ? "#ffffff" : "gray",
+                                }}
+                              />
+                              <ModeEditIcon
+                                sx={{
+                                  color: todo.completed ? "#ffffff" : "gray",
+                                }}
+                              />
                               <DeleteIcon
-                                sx={{ fontSize: 30, color: "gray" }}
+                                sx={{
+                                  fontSize: 30,
+                                  color: todo.completed ? "#ffffff" : "gray",
+                                }}
+                                onClick={() =>
+                                  handleClickOpen("delete", todo._id)
+                                }
                               />
                             </Box>
                           </ListItem>
@@ -76,6 +145,12 @@ const RightBar = () => {
               </Accordion>
             );
           })}
+        <Confirmation
+          open={openConfirm}
+          handleClose={handleClose}
+          taskToEdit={taskToEdit}
+          deleteType="taskTodo"
+        />
       </Paper>
     </Grid>
   );

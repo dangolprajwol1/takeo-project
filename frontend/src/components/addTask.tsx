@@ -24,6 +24,7 @@ import { TodoData, UserTasks } from "../services/taskTypes";
 import { useState, useEffect } from "react";
 import { AddTodoToTask, GetTask } from "../store/slice/taskSlice";
 import SnackBar from "./subComponents/snackbar";
+import { isAfter } from "date-fns";
 const AddTask = () => {
   const currentUserTask = useSelector<any, any>((state) => state.tasks);
   const user = useSelector<any, any>((state) => state.users);
@@ -38,7 +39,7 @@ const AddTask = () => {
   const addTask = async (e: any) => {
     e.preventDefault();
     if (!taskTitle || !description) return;
-    console.log("pass");
+
     const taskData: TodoData = { description, todosTitle: taskTitle };
     const data = await dispatch(AddTodoToTask(taskData));
     if (data.payload.success) {
@@ -91,10 +92,13 @@ const AddTask = () => {
                           onChange={(e) => setTaskTitle(e.target.value)}
                         >
                           {currentUserTask.userTasks.map((task: UserTasks) => {
-                            return (
+                            return !task.completed &&
+                              !isAfter(Date.now(), new Date(task.expiry)) ? (
                               <MenuItem value={task._id} key={task._id}>
                                 {task.title}
                               </MenuItem>
+                            ) : (
+                              " "
                             );
                           })}
                         </Select>
