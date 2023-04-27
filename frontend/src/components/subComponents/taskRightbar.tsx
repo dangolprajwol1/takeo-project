@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { CompleteTaskData } from "../../services/taskTypes";
 import { CompleteTodoTask, GetTask } from "../../store/slice/taskSlice";
 import Confirmation from "./deleteConfirmation";
-const RightBar = () => {
+const RightBar = (props: any) => {
   const [expanded, setExpanded] = useState<string | false>(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState("");
@@ -46,12 +46,12 @@ const RightBar = () => {
       return;
     }
 
-    if (action === "add") {
-      setTaskToEdit("");
+    if (action === "edit") {
+      setTaskToEdit(payload);
       return;
     }
 
-    setTaskToEdit(payload);
+    // setTaskToEdit(payload);
   };
 
   const handleClose = () => {
@@ -72,6 +72,7 @@ const RightBar = () => {
               <Accordion
                 expanded={expanded === task._id}
                 onChange={handleChange(task._id)}
+                key={task._id}
               >
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
@@ -92,6 +93,7 @@ const RightBar = () => {
                               background: todo.completed ? "#4BA064" : "",
                               my: "0.5rem",
                             }}
+                            key={todo._id}
                           >
                             <ListItemText
                               sx={{
@@ -124,12 +126,15 @@ const RightBar = () => {
                               <ModeEditIcon
                                 sx={{
                                   color: todo.completed ? "#ffffff" : "gray",
+                                  cursor: "pointer",
                                 }}
+                                onClick={() => props.updateTask(todo._id)}
                               />
                               <DeleteIcon
                                 sx={{
                                   fontSize: 30,
                                   color: todo.completed ? "#ffffff" : "gray",
+                                  cursor: "pointer",
                                 }}
                                 onClick={() =>
                                   handleClickOpen("delete", todo._id)

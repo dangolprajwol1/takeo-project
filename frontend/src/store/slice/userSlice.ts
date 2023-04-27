@@ -11,7 +11,6 @@ export const UserLogin = createAsyncThunk(
       password: credentials[1],
     });
     if (!data.data.error) {
-      console.log("i entered here");
       thunkAPI.dispatch(GetTask(data.data.uid));
     }
     return data.data;

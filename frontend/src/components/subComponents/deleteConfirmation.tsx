@@ -1,7 +1,11 @@
 import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { DeleteTask, GetTask } from "../../store/slice/taskSlice";
+import {
+  DeleteTask,
+  DeleteTodoTask,
+  GetTask,
+} from "../../store/slice/taskSlice";
 
 const Confirmation = (props: any) => {
   const [task, setTask] = useState("");
@@ -25,7 +29,7 @@ const Confirmation = (props: any) => {
       );
       // filter undefined values
       const realtasktobeDeleted = tasktobeDeleted.filter((task: any) => task);
-      console.log(realtasktobeDeleted);
+
       if (realtasktobeDeleted.length > 0) {
         setTask(realtasktobeDeleted[0].description);
       }
@@ -33,7 +37,10 @@ const Confirmation = (props: any) => {
   }, [props.taskToEdit]);
   const deleteTask = async (id: string) => {
     if (!id) return;
-    const deleted = await dispatch(DeleteTask(id));
+    const deleted =
+      props.deleteType === "taskTitle"
+        ? await dispatch(DeleteTask(id))
+        : await dispatch(DeleteTodoTask(id));
     if (!deleted.payload.success) return;
     setTask("");
     dispatch(GetTask(currentUser.userId));

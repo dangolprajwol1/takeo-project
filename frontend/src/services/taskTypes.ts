@@ -27,3 +27,9 @@ export interface CompleteTaskData {
   completed: boolean;
   taskId: string;
 }
+
+export interface EditTodoData {
+  description: string;
+  todosTitle: string;
+  taskId: string;
+}

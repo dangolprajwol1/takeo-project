@@ -65,6 +65,7 @@ const TaskSidebar = (props: any) => {
     setOpen(false);
     setTaskToEdit("");
   };
+  // let subTasks;
   return (
     <Grid item md={3.5} sm={6} xs={12}>
       <GridTitle> {props.title}</GridTitle>
@@ -75,6 +76,12 @@ const TaskSidebar = (props: any) => {
           {
             // reset index for color
             index > 2 ? (index = index % 3) : 0;
+            // check if all subtasks are completed
+            // subTasks =
+            //   task.todos.length > 0 &&
+            //   task.todos.every((todo: any) => {
+            //     return todo.completed === true;
+            //   });
           }
           return (
             <TodoPaper
@@ -98,7 +105,6 @@ const TaskSidebar = (props: any) => {
                     )} )`}
                   >
                     <Heading completed={task.completed}>
-                      {" "}
                       {`${task.title.substring(0, 8)}...`}{" "}
                     </Heading>
                   </Tooltip>

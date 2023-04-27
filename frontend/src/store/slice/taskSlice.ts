@@ -1,8 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosBase from "../../services/axiosBase";
+import axios from "axios";
 import {
   CompleteTaskData,
   EditTaskData,
+  EditTodoData,
   TaskData,
   TodoData,
 } from "../../services/taskTypes";
@@ -10,9 +12,15 @@ import {
 /* Task Title functions starts here */
 export const CreateTask = createAsyncThunk(
   "task/CreateTask",
-  async (input: TaskData) => {
-    const data = await axiosBase.post("api/v1/todo/addTodo", input);
-
+  async (input: TaskData, thunkAPI) => {
+    const state: any = thunkAPI.getState();
+    const headers = {
+      Authorization: "Bearer " + state.users.token,
+    };
+    const data = await axiosBase.post("api/v1/todo/addTodo", input, {
+      headers,
+    });
+    console.log(data.data);
     return data.data;
   }
 );
@@ -49,8 +57,14 @@ export const DeleteTask = createAsyncThunk(
 /* Task slice functions starts here */
 export const AddTodoToTask = createAsyncThunk(
   "task/AddTodoToTask",
-  async (input: TodoData) => {
-    const data = await axiosBase.post("api/v1/todo/addTodo/task", input);
+  async (input: TodoData, thunkAPI) => {
+    const state: any = thunkAPI.getState();
+    const headers = {
+      Authorization: "Bearer " + state.users.token,
+    };
+    const data = await axiosBase.post("api/v1/todo/addTodo/task", input, {
+      headers,
+    });
 
     return data.data;
   }
@@ -63,6 +77,27 @@ export const CompleteTodoTask = createAsyncThunk(
       input
     );
     // console.log(data);
+    return data.data;
+  }
+);
+export const UpdateTodoTask = createAsyncThunk(
+  "task/UpdateTodoTask",
+  async (input: EditTodoData) => {
+    const data = await axiosBase.patch(
+      `api/v1/todo/updateTodo/task/${input.taskId}`,
+      input
+    );
+    // console.log(data);
+    return data.data;
+  }
+);
+export const DeleteTodoTask = createAsyncThunk(
+  "task/DeleteTodoTask",
+  async (taskId: string) => {
+    const data = await axiosBase.delete(
+      `api/v1/todo/deleteTodo/task/${taskId}`
+    );
+
     return data.data;
   }
 );
