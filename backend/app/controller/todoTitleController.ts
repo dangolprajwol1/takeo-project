@@ -143,7 +143,9 @@ export const TodosToTitle = async (
     todoTitleId,
     operation, // push todo id inside todotitle
     { new: true }
-  );
+  ).populate({
+    path: "todos",
+  });
 
   if (!todoTitle) {
     return [];

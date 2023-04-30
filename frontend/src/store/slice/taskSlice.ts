@@ -26,10 +26,15 @@ export const CreateTask = createAsyncThunk(
 );
 export const EditTask = createAsyncThunk(
   "task/EditTask",
-  async (input: EditTaskData) => {
+  async (input: EditTaskData, thunkAPI) => {
+    const state: any = thunkAPI.getState();
+    const headers = {
+      Authorization: "Bearer " + state.users.token,
+    };
     const data = await axiosBase.patch(
       `api/v1/todo/updateTodo/${input.taskId}`,
-      input
+      input,
+      { headers }
     );
 
     return data.data;
@@ -37,10 +42,15 @@ export const EditTask = createAsyncThunk(
 );
 export const CompleteTask = createAsyncThunk(
   "task/CompleteTask",
-  async (input: CompleteTaskData) => {
+  async (input: CompleteTaskData, thunkAPI) => {
+    const state: any = thunkAPI.getState();
+    const headers = {
+      Authorization: "Bearer " + state.users.token,
+    };
     const data = await axiosBase.patch(
       `api/v1/todo/updateTodo/${input.taskId}`,
-      input
+      input,
+      { headers }
     );
     // console.log(data);
     return data.data;
@@ -48,8 +58,14 @@ export const CompleteTask = createAsyncThunk(
 );
 export const DeleteTask = createAsyncThunk(
   "task/DeleteTask",
-  async (taskId: string) => {
-    const data = await axiosBase.delete(`api/v1/todo/deleteTodo/${taskId}`);
+  async (taskId: string, thunkAPI) => {
+    const state: any = thunkAPI.getState();
+    const headers = {
+      Authorization: "Bearer " + state.users.token,
+    };
+    const data = await axiosBase.delete(`api/v1/todo/deleteTodo/${taskId}`, {
+      headers,
+    });
     return data.data;
   }
 );
@@ -71,10 +87,15 @@ export const AddTodoToTask = createAsyncThunk(
 );
 export const CompleteTodoTask = createAsyncThunk(
   "task/CompleteTodoTask",
-  async (input: CompleteTaskData) => {
+  async (input: CompleteTaskData, thunkAPI) => {
+    const state: any = thunkAPI.getState();
+    const headers = {
+      Authorization: "Bearer " + state.users.token,
+    };
     const data = await axiosBase.patch(
       `api/v1/todo/updateTodo/task/${input.taskId}`,
-      input
+      input,
+      { headers }
     );
     // console.log(data);
     return data.data;
@@ -82,10 +103,15 @@ export const CompleteTodoTask = createAsyncThunk(
 );
 export const UpdateTodoTask = createAsyncThunk(
   "task/UpdateTodoTask",
-  async (input: EditTodoData) => {
+  async (input: EditTodoData, thunkAPI) => {
+    const state: any = thunkAPI.getState();
+    const headers = {
+      Authorization: "Bearer " + state.users.token,
+    };
     const data = await axiosBase.patch(
       `api/v1/todo/updateTodo/task/${input.taskId}`,
-      input
+      input,
+      { headers }
     );
     // console.log(data);
     return data.data;
@@ -93,9 +119,14 @@ export const UpdateTodoTask = createAsyncThunk(
 );
 export const DeleteTodoTask = createAsyncThunk(
   "task/DeleteTodoTask",
-  async (taskId: string) => {
+  async (taskId: string, thunkAPI) => {
+    const state: any = thunkAPI.getState();
+    const headers = {
+      Authorization: "Bearer " + state.users.token,
+    };
     const data = await axiosBase.delete(
-      `api/v1/todo/deleteTodo/task/${taskId}`
+      `api/v1/todo/deleteTodo/task/${taskId}`,
+      { headers }
     );
 
     return data.data;
@@ -192,6 +223,24 @@ const TaskSlice = createSlice({
         state.loading = false;
       })
       .addCase(CompleteTodoTask.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(UpdateTodoTask.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(UpdateTodoTask.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(UpdateTodoTask.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(DeleteTodoTask.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(DeleteTodoTask.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(DeleteTodoTask.rejected, (state) => {
         state.loading = false;
       });
   },

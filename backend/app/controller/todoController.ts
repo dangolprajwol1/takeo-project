@@ -34,7 +34,7 @@ export const createTodo = tryCatchWrapper(
 
 export const updateTodo = tryCatchWrapper(
   async (req: Request, res: Response) => {
-    const { description, completed } = req.body;
+    const { description, completed, todosTitle } = req.body;
     let todo: TodoResponse | null;
     try {
       todo = await Todos.findByIdAndUpdate(
@@ -42,9 +42,25 @@ export const updateTodo = tryCatchWrapper(
         {
           description,
           completed,
-        },
-        { new: true }
+          todosTitle,
+        }
+        // { new: true }
       );
+      if (description && todosTitle && todo) {
+        // if current title is not equals old title
+        if (todosTitle !== todo.todosTitle) {
+          // rempve from old
+          await TodosToTitle(
+            todo.todosTitle!.toString(),
+            todo._id.toString(),
+            "delete"
+          );
+          // add to new
+          await TodosToTitle(todosTitle, todo._id.toString(), "add");
+        }
+
+        return res.status(200).json({ success: true, todo });
+      }
       // update parent todo title for complete  action
       if (todo) {
         // get todo title
@@ -88,6 +104,7 @@ export const updateTodo = tryCatchWrapper(
 export const deleteTodo = tryCatchWrapper(
   async (req: Request, res: Response) => {
     const deleted = await Todos.findOneAndDelete({ _id: req.params.id });
+
     if (!deleted) {
       throw new ApplicationError(500, "Error", [
         {
@@ -96,11 +113,24 @@ export const deleteTodo = tryCatchWrapper(
         },
       ]);
     }
-    await TodosToTitle(
+    // remove todos from todotitle
+    const todosTitle: TodoTitleResponse | any = await TodosToTitle(
       deleted.todosTitle!.toString(),
       deleted._id.toString(),
       "delete"
     );
+    // if remaining task inside todotitle is complete then update title as complete
+    if (todosTitle) {
+      const isComplete =
+        todosTitle.todos.length > 0 &&
+        todosTitle.todos.every((todo: any) => todo.completed === true);
+      if (isComplete) {
+        await TodosTitle.findByIdAndUpdate(todosTitle._id, {
+          completed: true,
+        });
+      }
+    }
+
     res.status(200).json({ success: true, deleted });
   }
 );
